@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "tst-chart.name" -}}
+{{- define "cat-chart.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "tst-chart.fullname" -}}
+{{- define "cat-chart.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "tst-chart.chart" -}}
+{{- define "cat-chart.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "tst-chart.labels" -}}
-helm.sh/chart: {{ include "tst-chart.chart" . }}
-{{ include "tst-chart.selectorLabels" . }}
+{{- define "cat-chart.labels" -}}
+helm.sh/chart: {{ include "cat-chart.chart" . }}
+{{ include "cat-chart.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "tst-chart.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "tst-chart.name" . }}
+{{- define "cat-chart.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "cat-chart.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "tst-chart.serviceAccountName" -}}
+{{- define "cat-chart.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "tst-chart.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "cat-chart.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
@@ -68,7 +68,7 @@ Create the name of the service account to use
     Define the deployment template.
     This template uses values passed in to configure the deployment for each service.
 */}}
-{{- define "tst-chart.deployment" -}}
+{{- define "cat-chart.deployment" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -137,7 +137,7 @@ spec:
   Define the service template.
   This template uses values passed in to configure the service for each deployment.
 */}}
-{{- define "tst-chart.service" -}}
+{{- define "cat-chart.service" -}}
 apiVersion: v1
 kind: Service
 metadata:
