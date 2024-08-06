@@ -5,10 +5,6 @@ services:
     # replicaCount: 1
     autoscaling:
       enabled: true
-      # minReplicas: 1
-      # maxReplicas: 1
-      # targetCPUUtilizationPercentage: 80
-      # targetMemoryUtilizationPercentage: 70
     revisionHistoryLimit: 3
     image:
       #repository: jnuho/fe-nginx-arm64
@@ -95,9 +91,9 @@ services:
     affinity: {}
 
   - name: be-go
-    replicaCount: 1
-    # autoscaling:
-    #   enabled: false
+    # replicaCount: 1
+    autoscaling:
+      enabled: true
     revisionHistoryLimit: 3
     image:
       repository: jnuho/be-go
@@ -110,11 +106,26 @@ services:
       #targetPort: web
       targetPort: 3001
     containerPort: 3001
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 256Mi
+        cpu: 100m
+    livenessProbe:
+      httpGet:
+        path: /
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /
+        port: http
 
   - name: be-py
-    replicaCount: 1
-    # autoscaling:
-    #   enabled: false
+    #replicaCount: 1
+    autoscaling:
+      enabled: true
     revisionHistoryLimit: 3
     image:
       repository: jnuho/be-py
@@ -127,16 +138,38 @@ services:
       #targetPort: web
       targetPort: 3002
     containerPort: 3002
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 256Mi
+        cpu: 100m
+    livenessProbe:
+      httpGet:
+        path: /
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /
+        port: http
 
-
-autoscaling:
-  name: fe-nginx-hpa
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 1
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 70
-
+hpas:
+  - name: fe-nginx-hpa
+    minReplicas: 1
+    maxReplicas: 1
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
+  - name: be-go-hpa
+    minReplicas: 1
+    maxReplicas: 1
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
+  - name: be-py-hpa
+    minReplicas: 1
+    maxReplicas: 1
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
 
 ingress:
   enabled: true

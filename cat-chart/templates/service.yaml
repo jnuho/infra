@@ -1,0 +1,23 @@
+
+{{- range .Values.services }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}-service
+  labels:
+    app: {{ .name }}
+  {{- if .service.annotations }}
+  annotations:
+    {{- toYaml .service.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .service.type }}
+  ports:
+    - name: http
+      port: {{ .service.port }}
+      targetPort: {{ .service.targetPort }}
+      protocol: TCP
+  selector:
+    app: {{ .name }}
+{{- end }}

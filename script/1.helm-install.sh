@@ -3,13 +3,12 @@
 current_context=$(kubectl config current-context)
 
 if [ "$current_context" = "minikube" ]; then
-    helm upgrade tst-release . -f values.local.yaml
+    helm install cat-release ../cat-chart -f ../cat-chart/values.local.yaml
 elif [ "$current_context" = "pi" ]; then
-    helm upgrade tst-release . -f values.pi.yaml
+    helm install cat-release ../cat-chart -f ../cat-chart/values.pi.yaml
 elif [[ "$current_context" == *"aws:eks"* ]]; then
     aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster --profile terraform
-    helm upgrade tst-release . -f values.prd.AWS.L4.ingress.controller.yaml
+    helm install cat-release ../cat-chart -f ../cat-chart/values.prd.AWS.L4.ingress.controller.yaml
 else
     echo "NO KUBERNETES CONTEXT FOUND!"
 fi
-
