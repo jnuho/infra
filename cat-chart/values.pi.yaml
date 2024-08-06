@@ -152,7 +152,7 @@ ingress:
   name: fe-nginx-ingress
   className: "nginx"
   hosts:
-    - host: localhost
+    - host: catornot.com
       http:
         paths:
         - path: /
