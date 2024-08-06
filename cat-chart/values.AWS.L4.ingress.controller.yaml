@@ -2,13 +2,7 @@
 
 services: 
   - name: fe-nginx
-    replicaCount: 1
-    autoscaling:
-      enabled: true
-      # minReplicas: 1
-      # maxReplicas: 1
-      # targetCPUUtilizationPercentage: 80
-      # targetMemoryUtilizationPercentage: 70
+    #replicaCount: 1
     revisionHistoryLimit: 3
     image:
       repository: jnuho/fe-nginx
@@ -21,12 +15,26 @@ services:
       targetPort: 80
     containerPort: 80
     resources:
-      requests:
-        memory: 256Mi
-        cpu: 100m
       limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 500m
         memory: 256Mi
-        cpu: 100m
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      failureThreshold: 3
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      failureThreshold: 3
     volumes:
       - name: config-volume
         configMap:
@@ -37,7 +45,7 @@ services:
         mountPath: /config
 
   - name: be-go
-    replicaCount: 1
+    #replicaCount: 1
     revisionHistoryLimit: 3
     image:
       repository: jnuho/be-go
@@ -49,9 +57,28 @@ services:
       port: 3001
       targetPort: 3001
     containerPort: 3001
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+    readinessProbe:
+      httpGet:
+        path: /healthz-go
+        port: 3001
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /healthz-go
+        port: 3001
+      initialDelaySeconds: 30
+      periodSeconds: 10
 
   - name: be-py
-    replicaCount: 1
+    #replicaCount: 1
     revisionHistoryLimit: 3
     image:
       repository: jnuho/be-py
@@ -63,15 +90,43 @@ services:
       port: 3002
       targetPort: 3002
     containerPort: 3002
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+    readinessProbe:
+      httpGet:
+        path: /healthz-py
+        port: 3002
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /healthz-py
+        port: 3002
+      initialDelaySeconds: 30
+      periodSeconds: 10
 
 
-autoscaling:
-  name: fe-nginx-hpa
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 1
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 70
+hpas:
+  - name: fe-nginx-hpa
+    minReplicas: 1
+    maxReplicas: 1
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
+  - name: be-go-hpa
+    minReplicas: 2
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
+  - name: be-py-hpa
+    minReplicas: 2
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 70
 
 
 ingress:
@@ -102,13 +157,20 @@ ingress:
               name: be-go-service
               port:
                 number: 3001
-        - path: /healthz
+        - path: /healthz-go
           pathType: Prefix
           backend:
             service:
               name: be-go-service
               port:
                 number: 3001
+        - path: /healthz-py
+          pathType: Prefix
+          backend:
+            service:
+              name: be-py-service
+              port:
+                number: 3002
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:

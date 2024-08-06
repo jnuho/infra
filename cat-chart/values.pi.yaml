@@ -1,18 +1,13 @@
-# for `local` environment
+# for `On-premise` environment
 
 services: 
   - name: fe-nginx
-    # replicaCount: 1
-    autoscaling:
-      enabled: true
+    #replicaCount: 1
     revisionHistoryLimit: 3
     image:
-      #repository: jnuho/fe-nginx-arm64
       repository: jnuho/fe-nginx
-      # Overrides the image tag whose default is the chart appVersion.
-      #tag: ""
       tag: "latest"
-      # pullPolicy: IfNotPresent
+      #pullPolicy: IfNotPresent
       pullPolicy: Always
     service:
       type: ClusterIP
@@ -21,55 +16,32 @@ services:
       targetPort: 80
     containerPort: 80
     #resources: {}
-      # We usually recommend not to specify default resources and to leave this as a conscious
-      # choice for the user. This also increases chances charts run on environments with little
-      # resources, such as Minikube. If you do want to specify resources, uncomment the following
-      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-      # limits:
-      #   cpu: 100m
-      #   memory: 128Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 128Mi
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
     resources:
-      requests:
-        memory: 256Mi
-        cpu: 100m
       limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 500m
         memory: 256Mi
-        cpu: 100m
-    livenessProbe:
-      httpGet:
-        path: /
-        port: http
     readinessProbe:
       httpGet:
         path: /
-        port: http
-    imagePullSecrets: []
-    nameOverride: ""
-    fullnameOverride: ""
-    serviceAccount:
-      # Specifies whether a service account should be created
-      create: true
-      # Automatically mount a ServiceAccount's API credentials?
-      automount: true
-      # Annotations to add to the service account
-      annotations: {}
-      # The name of the service account to use.
-      # If not set and create is true, a name is generated using the fullname template
-      name: ""
-    podAnnotations: {}
-    podLabels: {}
-    podSecurityContext: {}
-      # fsGroup: 2000
-    securityContext: {}
-      # capabilities:
-      #   drop:
-      #   - ALL
-      # readOnlyRootFilesystem: true
-      # runAsNonRoot: true
-      # runAsUser: 1000
+        port: 80
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      failureThreshold: 3
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      failureThreshold: 3
+
     # Additional volumes on the output Deployment definition.
     volumes:
       - name: config-volume
@@ -86,73 +58,76 @@ services:
       # - name: foo
       #   mountPath: "/etc/foo"
       #   readOnly: true
-    nodeSelector: {}
-    tolerations: []
-    affinity: {}
+    #nodeSelector: {}
+    #tolerations: []
+    #affinity: {}
 
   - name: be-go
-    # replicaCount: 1
-    autoscaling:
-      enabled: true
+    #replicaCount: 1
     revisionHistoryLimit: 3
     image:
       repository: jnuho/be-go
       tag: "latest"
-      # pullPolicy: IfNotPresent
+      #pullPolicy: IfNotPresent
       pullPolicy: Always
     service:
       type: ClusterIP
       port: 3001
-      #targetPort: web
       targetPort: 3001
     containerPort: 3001
     resources:
-      requests:
-        memory: 256Mi
-        cpu: 100m
       limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 500m
         memory: 256Mi
-        cpu: 100m
-    livenessProbe:
-      httpGet:
-        path: /
-        port: http
     readinessProbe:
       httpGet:
-        path: /
-        port: http
+        path: /healthz-go
+        port: 3001
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /healthz-go
+        port: 3001
+      initialDelaySeconds: 30
+      periodSeconds: 10
 
   - name: be-py
     #replicaCount: 1
-    autoscaling:
-      enabled: true
     revisionHistoryLimit: 3
     image:
       repository: jnuho/be-py
       tag: "latest"
-      # pullPolicy: IfNotPresent
+      #pullPolicy: IfNotPresent
       pullPolicy: Always
     service:
       type: ClusterIP
       port: 3002
-      #targetPort: web
       targetPort: 3002
     containerPort: 3002
     resources:
-      requests:
-        memory: 256Mi
-        cpu: 100m
       limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 500m
         memory: 256Mi
-        cpu: 100m
-    livenessProbe:
-      httpGet:
-        path: /
-        port: http
     readinessProbe:
       httpGet:
-        path: /
-        port: http
+        path: /healthz-py
+        port: 3002
+      initialDelaySeconds: 10
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /healthz-py
+        port: 3002
+      initialDelaySeconds: 30
+      periodSeconds: 10
+
 
 hpas:
   - name: fe-nginx-hpa
@@ -161,21 +136,21 @@ hpas:
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 70
   - name: be-go-hpa
-    minReplicas: 1
-    maxReplicas: 1
+    minReplicas: 2
+    maxReplicas: 2
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 70
   - name: be-py-hpa
-    minReplicas: 1
-    maxReplicas: 1
+    minReplicas: 2
+    maxReplicas: 2
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 70
+
 
 ingress:
   enabled: true
   name: fe-nginx-ingress
   className: "nginx"
-  # annotations: {}
   hosts:
     - host: localhost
       http:
@@ -201,13 +176,20 @@ ingress:
               name: be-go-service
               port:
                 number: 3001
-        - path: /healthz
+        - path: /healthz-go
           pathType: Prefix
           backend:
             service:
               name: be-go-service
               port:
                 number: 3001
+        - path: /healthz-py
+          pathType: Prefix
+          backend:
+            service:
+              name: be-py-service
+              port:
+                number: 3002
         # - path: /mongo-express
         #   pathType: Prefix
         #   backend:

@@ -7,7 +7,7 @@ metadata:
   labels:
     app: {{ .name }}
 spec:
-  {{- if not .autoscaling }}
+  {{- if .replicaCount }}
   replicas: {{ .replicaCount }}
   {{- end }}
   {{- if .revisionHistoryLimit }}

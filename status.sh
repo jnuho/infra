@@ -9,15 +9,15 @@
 
 echo ""
 echo "-------[Pod]-------"
-kubectl get pod
+kubectl get pod -o wide
 
-echo ""
-echo "-------[Deployment]-------"
-kubectl get deploy
+#echo ""
+#echo "-------[Deployment]-------"
+#kubectl get deploy
 
-echo ""
-echo "-------[Service]-------"
-kubectl get service
+#echo ""
+#echo "-------[Service]-------"
+#kubectl get service
 
 echo ""
 echo "-------[Ingress]-------"
