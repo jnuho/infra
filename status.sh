@@ -3,9 +3,9 @@
 #echo ""
 #kubectl get namespace
 
-# echo ""
-# echo "-------[Node]-------"
-# kubectl get node
+#echo ""
+#echo "-------[Node]-------"
+#kubectl get node
 
 echo ""
 echo "-------[Pod]-------"

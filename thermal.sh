@@ -5,10 +5,13 @@ IP_WIDTH=15
 TEMP_WIDTH=15
 TITLE_WIDTH=20
 
-printf "\n"
+curr_time=$(date +"%T")
+curr_date=$(date +"%Y-%m-%d")
+printf "$curr_date. $curr_time\n\n"
 printf "%-${HOST_WIDTH}s %-${IP_WIDTH}s %-${TITLE_WIDTH}s %-${TITLE_WIDTH}s %-${TITLE_WIDTH}s\n" "HOST" "Node IP" \
     "𓇲  CPU °C" "📥 SSD °C" "🍃 Fan RPM"
-# start=$(date +%s)
+
+#start=$(date +%s)
 
 for host in "m" "w1" "w2"; do
     hostname=$(ssh "$host" "hostname" | awk '{print $1}')

@@ -151,6 +151,9 @@ ingress:
   enabled: true
   name: fe-nginx-ingress
   className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+    nginx.ingress.kubernetes.io/upstream-vhost: argocd-server.argocd.svc.cluster.local
   hosts:
     - host: catornot.com
       http:
@@ -190,6 +193,13 @@ ingress:
               name: be-py-service
               port:
                 number: 3002
+        - path: /argocd
+          pathType: Prefix
+          backend:
+            service:
+              name: argocd-server
+              port:
+                number: 80
         # - path: /mongo-express
         #   pathType: Prefix
         #   backend:
