@@ -1,6 +1,9 @@
 # for `On-premise` environment
-
 services: 
+  # - service:
+  #     name: argocd-server-proxy
+  #     type: ExternalName
+  #     externalName: argocd-server.argocd.svc.cluster.local
   - name: fe-nginx
     #replicaCount: 1
     revisionHistoryLimit: 3
@@ -128,7 +131,6 @@ services:
       initialDelaySeconds: 30
       periodSeconds: 10
 
-
 hpas:
   - name: fe-nginx-hpa
     minReplicas: 1
@@ -151,7 +153,13 @@ ingress:
   - name: catornot-ingress
     ingressClassName: nginx
     # annotations:
+    #   nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    #   nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    tls:
+    - hosts:
+      - catornot.com
+      secretName: catornot-tls
     hosts:
       - host: catornot.com
         http:
@@ -191,16 +199,23 @@ ingress:
                 name: be-py-service
                 port:
                   number: 3002
-    tls:
-    - hosts:
-      - catornot.com
-      secretName: catornot-tls
+          # - path: /argocd
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: argocd-server-proxy
+          #       port:
+          #         number: 443
   - name: argocd-ingress
     namespace: argocd
     ingressClassName: nginx
     annotations:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    tls:
+    - hosts:
+      - argocd.catornot.com
+      secretName: argocd-server-tls
     hosts:
       - host: argocd.catornot.com
         http:
@@ -209,13 +224,9 @@ ingress:
             pathType: Prefix
             backend:
               service:
-                name: fe-nginx-service
+                name: argocd-server
                 port:
-                  number: 8080
-    tls:
-    - hosts:
-      - argocd.catornot.com
-      secretName: argocd-server-tls
+                  number: 443
 
 config:
   backend_go_url: http://localhost:8080

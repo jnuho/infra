@@ -1,26 +1,38 @@
-
 {{- range .Values.services }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  {{- if .name }}
   name: {{ .name }}-service
-  {{- if .namespace }}
-  namespace: {{ .namespace }}
+  {{- else }}
+  name: {{ .service.name }}
   {{- end }}
+  {{- if .service.namespace }}
+  namespace: {{ .service.namespace }}
+  {{- end }}
+  {{- if .name }}
   labels:
     app: {{ .name }}
+  {{- end }}
   {{- if .service.annotations }}
   annotations:
     {{- toYaml .service.annotations | nindent 4 }}
   {{- end }}
 spec:
   type: {{ .service.type }}
+  {{- if .service.port }}
   ports:
     - name: http
       port: {{ .service.port }}
       targetPort: {{ .service.targetPort }}
       protocol: TCP
+  {{- end }}
+  {{- if .name }}
   selector:
     app: {{ .name }}
+  {{- end }}
+  {{- if .service.externalName }}
+  externalName: {{ .service.externalName }}
+  {{- end }}
 {{- end }}
