@@ -13,3 +13,5 @@ data:
     [backend_go]
     backend_go_url = {{ .backend_go_url }}
 {{- end }}
+
+{{- end }}
