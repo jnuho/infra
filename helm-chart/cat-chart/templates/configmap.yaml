@@ -1,12 +1,15 @@
+{{- range .Values.config }}
+---
+{{- if .name }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: application-settings
-  {{- if .Values.config.namespace }}
-  namespace: {{ .Values.config.namespace }}
+  name: {{ .name }}
+  {{- if .namespace }}
+  namespace: {{ .namespace }}
   {{- end }}
 data:
   settings.ini: |
-    app_mode = {{ .Values.config.appMode }}
     [backend_go]
-    backend_go_url = {{ .Values.config.backend_go_url }}
+    backend_go_url = {{ .backend_go_url }}
+{{- end }}

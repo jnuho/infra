@@ -229,4 +229,5 @@ ingress:
                   number: 443
 
 config:
-  backend_go_url: http://localhost:8080
+  - name: application-settings
+    backend_go_url: http://localhost:8080
