@@ -1,5 +1,7 @@
-# helm-chart
+# infra
 
-helm chart for various projects
+- helm-chart
+    - cat-chart: [`CatVsNonCat`](https://github.com/jnuho/CatVsNonCat)
+- terraform
+- ansible
 
-- cat-chart: [`CatVsNonCat`](https://github.com/jnuho/CatVsNonCat)

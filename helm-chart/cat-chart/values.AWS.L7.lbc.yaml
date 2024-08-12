@@ -131,7 +131,7 @@ hpas:
 
 ingress:
   - name: fe-nginx-ingress
-    className: "alb"
+    ingressClassName: alb
     annotations:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip

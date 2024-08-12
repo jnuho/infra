@@ -131,7 +131,7 @@ hpas:
 
 ingress:
   - name: fe-nginx-ingress
-    className: external-nginx
+    ingressClassName: external-nginx
     hosts:
       - http:
           paths:

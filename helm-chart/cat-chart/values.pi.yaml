@@ -149,7 +149,7 @@ hpas:
 
 ingress:
   - name: catornot-ingress
-    className: "nginx"
+    ingressClassName: nginx
     # annotations:
     #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     hosts:
@@ -191,21 +191,13 @@ ingress:
                 name: be-py-service
                 port:
                   number: 3002
-          # - path: /mongo-express
-          #   pathType: Prefix
-          #   backend:
-          #     service:
-          #       name: mongo-express-service
-          #       port:
-          #         number: 8081
-    # tls: []
     tls:
     - hosts:
       - catornot.com
       secretName: catornot-tls
   - name: argocd-ingress
     namespace: argocd
-    className: "nginx"
+    ingressClassName: nginx
     annotations:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
@@ -224,18 +216,6 @@ ingress:
     - hosts:
       - argocd.catornot.com
       secretName: argocd-server-tls
-
-# secret:
-#   - name: argocd-server-tls
-#     namespace: argocd
-#     cert: |
-#       -----BEGIN CERTIFICATE-----
-#       MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7V1...
-#       -----END CERTIFICATE-----
-#     key: |
-#       -----BEGIN RSA PRIVATE KEY-----
-#       MIIEpAIBAAKCAQEA7V1...
-#       -----END RSA PRIVATE KEY-----
 
 config:
   backend_go_url: http://localhost:8080
