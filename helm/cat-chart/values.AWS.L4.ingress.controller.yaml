@@ -130,51 +130,50 @@ hpas:
 
 
 ingress:
-  enabled: true
-  name: fe-nginx-ingress
-  className: external-nginx
-  hosts:
-    - http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: fe-nginx-service
-              port:
-                number: 8080
-        - path: /web/cat
-          pathType: Prefix
-          backend:
-            service:
-              name: be-go-service
-              port:
-                number: 3001
-        - path: /weather
-          pathType: Prefix
-          backend:
-            service:
-              name: be-go-service
-              port:
-                number: 3001
-        - path: /healthz-go
-          pathType: Prefix
-          backend:
-            service:
-              name: be-go-service
-              port:
-                number: 3001
-        - path: /healthz-py
-          pathType: Prefix
-          backend:
-            service:
-              name: be-py-service
-              port:
-                number: 3002
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  - name: fe-nginx-ingress
+    className: external-nginx
+    hosts:
+      - http:
+          paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fe-nginx-service
+                port:
+                  number: 8080
+          - path: /web/cat
+            pathType: Prefix
+            backend:
+              service:
+                name: be-go-service
+                port:
+                  number: 3001
+          - path: /weather
+            pathType: Prefix
+            backend:
+              service:
+                name: be-go-service
+                port:
+                  number: 3001
+          - path: /healthz-go
+            pathType: Prefix
+            backend:
+              service:
+                name: be-go-service
+                port:
+                  number: 3001
+          - path: /healthz-py
+            pathType: Prefix
+            backend:
+              service:
+                name: be-py-service
+                port:
+                  number: 3002
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
 
 config:
   backend_go_url: http://k8s-default-fenginxi-ab0a71e16a-424716363.ap-northeast-2.elb.amazonaws.com

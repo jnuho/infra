@@ -5,6 +5,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .name }}-service
+  {{- if .namespace }}
+  namespace: {{ .namespace }}
+  {{- end }}
   labels:
     app: {{ .name }}
   {{- if .service.annotations }}

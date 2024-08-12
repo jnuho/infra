@@ -4,6 +4,9 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .name }}
+  {{- if .namespace }}
+  namespace: {{ .namespace }}
+  {{- end }}
   labels:
     {{- include "cat-chart.labels" $ | nindent 4 }}
 spec:
