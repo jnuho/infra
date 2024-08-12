@@ -1,9 +1,6 @@
 #!/bin/bash
 
 #echo ""
-#kubectl get namespace
-
-#echo ""
 #echo "-------[Node]-------"
 #kubectl get node
 
