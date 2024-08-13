@@ -158,10 +158,10 @@ ingress:
     #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     tls:
     - hosts:
-      - catornot.com
+      - catornot.org
       secretName: catornot-tls
     hosts:
-      - host: catornot.com
+      - host: catornot.org
         http:
           paths:
           - path: /
@@ -214,10 +214,10 @@ ingress:
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     tls:
     - hosts:
-      - argocd.catornot.com
+      - argocd.catornot.org
       secretName: argocd-server-tls
     hosts:
-      - host: argocd.catornot.com
+      - host: argocd.catornot.org
         http:
           paths:
           - path: /
