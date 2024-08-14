@@ -1,9 +1,5 @@
 # for `On-premise` environment
 services: 
-  # - service:
-  #     name: argocd-server-proxy
-  #     type: ExternalName
-  #     externalName: argocd-server.argocd.svc.cluster.local
   - name: fe-nginx
     #replicaCount: 1
     revisionHistoryLimit: 3
@@ -152,10 +148,12 @@ hpas:
 ingress:
   - name: catornot-ingress
     ingressClassName: nginx
-    # annotations:
-    #   nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    #   nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    #annotations:
+      #cert-manager.io/issuer: "letsencrypt-stage"
+      #cert-manager.io/cluster-issuer: "letsencrypt-stage"
+      #nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      #nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      #nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     tls:
     - hosts:
       - catornot.org
@@ -212,10 +210,12 @@ ingress:
     annotations:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      #cert-manager.io/issuer: "letsencrypt-stage"
+      #cert-manager.io/cluster-issuer: "letsencrypt-stage"
     tls:
     - hosts:
       - argocd.catornot.org
-      secretName: argocd-server-tls
+      secretName: catornot-tls
     hosts:
       - host: argocd.catornot.org
         http:
